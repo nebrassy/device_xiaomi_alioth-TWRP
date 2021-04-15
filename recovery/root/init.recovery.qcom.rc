@@ -1,12 +1,35 @@
 import /init.recovery.qcom_decrypt.rc
 
+service vendor.qti.vibrator /system/bin/vendor.qti.hardware.vibrator.service
+    user root
+    group root
+    disabled
+    setenv LD_LIBRARY_PATH /vendor/lib64:/vendor/lib:/system/lib64:/system/lib:/sbin
+    seclabel u:r:recovery:s0
+
 on fs
     wait /dev/block/platform/soc/${ro.boot.bootdevice}
     symlink /dev/block/platform/soc/${ro.boot.bootdevice} /dev/block/bootdevice
+    chown system system /sys/bus/i2c/drivers/aw8697_haptic/2-005a/f0_save
+    chown system system /sys/bus/i2c/drivers/aw8697_haptic/2-005a/osc_save
+    chown system system /sys/bus/i2c/drivers/aw8697_haptic/3-005a/osc_save
+    chown system system /sys/bus/i2c/drivers/aw8697_haptic/2-005a/custom_wave
+    chmod 0666  /sys/bus/i2c/drivers/aw8697_haptic/2-005a/custom_wave
+    chown system system /sys/bus/i2c/drivers/aw8697_haptic/2-005a/custom_wave
+    chmod 0666  /sys/bus/i2c/drivers/aw8697_haptic/2-005a/custom_wave
+    chown system system /sys/bus/i2c/drivers/aw8697_haptic/3-005a/custom_wave
+    chmod 0666  /sys/bus/i2c/drivers/aw8697_haptic/3-005a/custom_wave
+    chmod 0666 /sys/class/qcom-haptics/lra_calibration
+    chown system system /sys/bus/i2c/drivers/aw8697_haptic/0-005a/custom_wave
+    chmod 0666  /sys/bus/i2c/drivers/aw8697_haptic/0-005a/custom_wave
+    chown system system /sys/bus/i2c/drivers/aw8697_haptic/1-005a/custom_wave
+    chmod 0666  /sys/bus/i2c/drivers/aw8697_haptic/1-005a/custom_wave
+    chmod 0666 /sys/class/qcom-haptics/lra_impedance
 
 on post-fs
     start boot-hal-1-1
 
 on boot
     start health-hal-2-1
+    start vendor.qti.vibrator
     setprop sys.usb.config adb
